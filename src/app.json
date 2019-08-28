@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/record/main",
+    "pages/photo/main",
+    "pages/mine/main",
+    "pages/ar/main",
+    "pages/detail/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "鎏嫣宫",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#1afa29",
+    "list": [{
+      "pagePath": "pages/record/main",
+      "text": "语音",
+      "iconPath": "static/tabs/classify.png",
+      "selectedIconPath": "static/tabs/classify-s.png"
+    }, {
+      "pagePath": "pages/photo/main",
+      "text": "拍照",
+      "iconPath": "static/tabs/photo.png",
+      "selectedIconPath": "static/tabs/photo-s.png"
+    },
+    {
+      "pagePath": "pages/mine/main",
+      "text": "我的",
+      "iconPath": "static/tabs/mine.png",
+      "selectedIconPath": "static/tabs/mine-s.png"
+    }],
+    "position": "bottom"
+  },
+  "sitemapLocation": "sitemap.json",
+  "plugins": {
+    "WechatSI": {
+      "version": "0.3.1",
+      "provider": "wx069ba97219f66d99"
+    }
+  }
+}
