@@ -1,6 +1,6 @@
 # mpvue-garbage
 
-> mpvue重写 喂，你的垃圾
+> mpvue重写 鎏嫣宫
 
 ## Build Setup
 
