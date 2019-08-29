@@ -41,14 +41,15 @@ export default {
   onShow () {
     let history = mpvue.getStorageSync('history') || []
     history = Array.from(new Set(history))
-    mpvue.setStorageSync('history', history)
     this.historyList = history.slice(0, 12)
+    mpvue.setStorageSync('history', this.historyList)
   },
   methods: {
     deleteItem (e) {
       const list = [...this.historyList]
       list.splice(e, 1)
       this.historyList = list
+      mpvue.setStorageSync('history', this.historyList)
     },
     navigatorTodetail (e) {
       console.log(e)
