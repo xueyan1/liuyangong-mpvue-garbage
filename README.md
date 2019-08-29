@@ -37,3 +37,12 @@ npm run build --report
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 ##  使用mpvue重写鎏嫣宫
+
+  - 页面介绍
+
+    - record    -> 语音识别
+    - photo     -> 拍照识别
+    - mine      -> 我的
+    - detail    -> 详情
+    - ar        ->AR 识别
+  - 语音识别使用的是微信同声翻译插件。
