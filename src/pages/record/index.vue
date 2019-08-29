@@ -30,7 +30,7 @@
 import Search from '../../components/search.vue'
 import { get } from '@/utils/request'
 import { queryGarbagUrl } from '@/utils/urls'
-
+import {setHistory} from '@/utils/storage'
 let plugin = requirePlugin('WechatSI')
 let manager = plugin.getRecordRecognitionManager()
 
@@ -56,8 +56,6 @@ export default {
   methods: {
     // 初始化录音功能
     initRecord () {
-      console.log('manager', manager)
-
       manager.onRecognize = (res) => {
         const text = res.result
         this.currentText = text
@@ -74,7 +72,6 @@ export default {
       manager.start({
         lang: 'zh_CN'
       })
-      console.log('start')
       mpvue.vibrateShort()
       this.isRecording = true
     },
@@ -82,7 +79,6 @@ export default {
     endStreamRecord () {
       mpvue.vibrateShort()
       manager.stop()
-      console.log('stop')
       this.isRecording = false
     },
     // 翻译操作
@@ -94,10 +90,7 @@ export default {
     // 查询数据
     getData () {
       const name = this.currentText.slice(0, -1)
-      let history = mpvue.getStorageSync('history') || []
-      history.unshift(name)
-      mpvue.setStorageSync('history', history)
-
+      setHistory(name)
       get({
         url: queryGarbagUrl,
         params: {

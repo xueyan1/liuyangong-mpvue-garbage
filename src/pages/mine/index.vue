@@ -41,6 +41,7 @@ export default {
   onShow () {
     let history = mpvue.getStorageSync('history') || []
     history = Array.from(new Set(history))
+    mpvue.setStorageSync('history', history)
     this.historyList = history.slice(0, 12)
   },
   methods: {

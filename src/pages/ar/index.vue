@@ -1,35 +1,100 @@
 <template>
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
+  <div>
+    <camera v-if="showCamera"
+            device-position="back"
+            flash="off"
+            binderror="error"
+            style="width:100vw; height:100vh;">
+      <cover-view class='bottom-block'>
+        <cover-image class='takePhoto'
+                     src='/static/images/ar.png'
+                     @click='takeAndPredict'>
+        </cover-image>
+      </cover-view>
+    </camera>
+    <canvas v-if="showCanvas"
+            canvas-id="canvas"
+            class="canvas"
+            style="width:300px; height:300px;">
+    </canvas>
+  </div>
 </template>
 <script>
-
+import { queryByImgUrl } from '@/utils/urls.js'
 export default {
   data () {
     return {
-      motto: 'Hello miniprograme',
-      userInfo: {
-        nickName: 'mpvue',
-        avatarUrl: 'http://mpvue.com/assets/logo.png'
-      }
+      photoWidth: 0,
+      photoHeight: 0,
+      showCamera: true, // 照相机显示
+      showCanvas: false // 图片显示
     }
   },
 
   components: {
 
   },
+  onShow () {
+    this.showCamera = true
+    this.showCanvas = false
+  },
 
   methods: {
-    bindViewTap () {
-      const url = '../logs/main'
-      if (mpvuePlatform === 'wx') {
-        mpvue.switchTab({ url })
-      } else {
-        mpvue.navigateTo({ url })
-      }
+    // 截取照片
+    takeAndPredict () {
+      const ctx = mpvue.createCameraContext()
+      ctx.takePhoto({
+        quality: 'high',
+        success: (res) => {
+          this.showCamera = false
+          this.showCanvas = true
+          this.drawImage(res.tempImagePath)
+          mpvue.showLoading({
+            title: '上传识别中'
+          })
+          mpvue.uploadFile({
+            url: queryByImgUrl, // 仅为示例，非真实的接口地址
+            filePath: res.tempImagePath,
+            name: 'file',
+            header: {
+              'content-type': 'multipart/form-data'// 记得设置
+            },
+            formData: {
+              'user': 'test'
+            },
+            success (res) {
+              mpvue.hideLoading()
+              const data = res.data
+              console.log('data', data)
+              if (data) {
+                mpvue.setStorageSync('garlist', data) // 因为返回来的可能是多数据的，所以保存起来，不过不作为历史查询
+                mpvue.navigateTo({
+                  url: `/pages/detail/main`
+                })
+              }
+            }
+          })
+        }
+      })
     },
-    clickHandle (ev) {
-      console.log('clickHandle:', ev)
-      // throw {message: 'custom test'}
+    drawImage (imagePath) {
+      const cv = mpvue.createCanvasContext('canvas', this)
+      const drawFunc = () => {
+        cv.drawImage(imagePath, 0, 0, this.photoWidth, this.photoWidth, 0, 0, 300, 300)
+        cv.draw()
+      }
+      if (this.photoWidth === 0) {
+        mpvue.getImageInfo({
+          src: imagePath,
+          success: (res) => {
+            this.photoWidth = res.width
+            this.photoHeight = res.height
+            drawFunc()
+          }
+        })
+      } else {
+        drawFunc()
+      }
     }
   },
 
@@ -40,54 +105,22 @@ export default {
 </script>
 
 <style>
-.userinfo {
+.bottom-block {
+  bottom: 0px;
+  height: 200rpx;
+  width: 100%;
+  position: absolute;
+
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
 }
 
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+.takePhoto {
+  width: 132rpx;
+  height: 132rpx;
 }
-
-.userinfo-nickname {
-  color: #aaa;
-}
-
-.usermotto {
-  margin-top: 150px;
-}
-
-.form-control {
-  display: block;
-  padding: 0 12px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-}
-.all{
-  width:7.5rem;
-  height:1rem;
-  background-color:blue;
-}
-.all:after{
-  display:block;
-  content:'';
-  clear:both;
-}
-.left{
-  float:left;
-  width:3rem;
-  height:1rem;
-  background-color:red;
-}
-
-.right{
-  float:left;
-  width:4.5rem;
-  height:1rem;
-  background-color:green;
+.canvas{
+  margin:60rpx auto
 }
 </style>
